@@ -17,6 +17,18 @@ namespace Catalog.Repositories
 			new Product { Id = Guid.NewGuid(), Name = "Product 10", Price = 100, createDate = DateTimeOffset.UtcNow },
 		};
 
+		public void CreateProduct(Product product)
+		{
+			products.Add(product);
+		}
+
+		public void DeleteProduct(Guid id)
+		{
+			var index = products.FindIndex(p => p.Id == id);
+
+			products.RemoveAt(index);
+		}
+
 		// public IEnumerable<Product> GetAll() => products;
 		public IEnumerable<Product> GetAll()
 		{
@@ -27,6 +39,12 @@ namespace Catalog.Repositories
 		{
 			// return products.FirstOrDefault(p => p.Id == id);
 			return products.Where(p => p.Id == id).SingleOrDefault();
+		}
+
+		public void UpdateProduct(Product product)
+		{
+			var index = products.FindIndex(p => p.Id == product.Id);
+			products[index] = product;
 		}
 	}
 }

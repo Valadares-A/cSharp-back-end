@@ -1,8 +1,7 @@
-
 using Catalog.Entities;
 namespace Catalog.Repositories
 {
-	public class MockedProductsRepository
+	public class MockedProductsRepository : MockedProductsRepositoryInterface
 	{
 		private readonly List<Product> products = new()
 		{

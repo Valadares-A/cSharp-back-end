@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Catalog.Repositories;
 using Catalog.Entities;
+using Catalo.Dtos;
 
 namespace Catalog.Controllers
 {
@@ -8,23 +9,22 @@ namespace Catalog.Controllers
 	[Route("api/products")]
 	public class ProductsController : ControllerBase
 	{
-		private readonly MockedProductsRepository _productsRepository;
+		private readonly MockedProductsRepositoryInterface _productsRepository;
 
-		// public ProductsController(MockedProductsRepository productsRepository)
-		// {
-		// 	_productsRepository = productsRepository;
-		// }
-
-		public ProductsController()
+		// Inject the mocked products repository (injeção de dependencias)
+		// Quando a um necessidade de injeção de dependencia, se cria uma interface das classes para fazer essa injeção
+		public ProductsController(MockedProductsRepositoryInterface productsRepository)
 		{
-			_productsRepository = new MockedProductsRepository();
+			_productsRepository = productsRepository;
+			// ou:
+			// this._productsRepository = productsRepository;
 		}
 
 		// GET api/products - get all products
 		[HttpGet]
-		public IEnumerable<Product> GetProducts()
+		public IEnumerable<ProductDto> GetProducts()
 		{
-			return _productsRepository.GetAll();
+			return _productsRepository.GetAll().Select(p => p.AsDto());
 		}
 
 		// GET api/products/{id} - get product by id
@@ -35,15 +35,16 @@ namespace Catalog.Controllers
 		// 404 - Not Found
 		// 500 - Internal Server Error
 		// etc...
-		public ActionResult<Product> GetProductById(Guid id)
+		public ActionResult<ProductDto> GetProductById(Guid id)
 		{
 			var p = _productsRepository.GetById(id);
-			Console.WriteLine($"Product FDP: {p}");
+
 			if (p is null)
 			{
 				return NotFound();
 			}
-			return p;
+			Console.WriteLine($"Product FDP: {p}");
+			return p.AsDto();
 		}
 	}
 

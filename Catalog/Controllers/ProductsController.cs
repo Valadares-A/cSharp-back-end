@@ -4,6 +4,9 @@ using Catalog.Entities;
 using Catalo.Dtos;
 using Catalog.Dtos;
 
+// controller é onde se cria a definição das requests
+// rotas de get post put delete
+
 namespace Catalog.Controllers
 {
 	[ApiController]

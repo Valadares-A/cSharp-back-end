@@ -26,9 +26,9 @@ namespace Catalog.Controllers
 
 		// GET api/products - get all products
 		[HttpGet]
-		public IEnumerable<ProductDto> GetProducts()
+		public async Task<IEnumerable<ProductDto>> GetProducts()
 		{
-			return _productsRepository.GetAll().Select(p => p.AsDto());
+			return (await _productsRepository.GetAllAsync()).Select(p => p.AsDto());
 		}
 
 		// GET api/products/{id} - get product by id
@@ -39,9 +39,9 @@ namespace Catalog.Controllers
 		// 404 - Not Found
 		// 500 - Internal Server Error
 		// etc...
-		public ActionResult<ProductDto> GetProductById(Guid id)
+		public async Task<ActionResult<ProductDto>> GetProductById(Guid id)
 		{
-			var p = _productsRepository.GetById(id);
+			var p = await _productsRepository.GetByIdAsync(id);
 
 			if (p is null)
 			{
@@ -54,7 +54,7 @@ namespace Catalog.Controllers
 
 		// POST api/products - create a new product
 		[HttpPost]
-		public ActionResult<ProductDto> CreateProduct(CreateProductDto product)
+		public async Task<ActionResult<ProductDto>> CreateProduct(CreateProductDto product)
 		{
 			Product p = new()
 			{
@@ -63,15 +63,15 @@ namespace Catalog.Controllers
 				Price = product.Price,
 				createDate = DateTimeOffset.UtcNow
 			};
-			_productsRepository.CreateProduct(p);
+			await _productsRepository.CreateProductAsync(p);
 			return CreatedAtAction(nameof(GetProductById), new { id = p.Id }, p.AsDto());
 		}
 
 		// PUT api/products/{id} - update a product
 		[HttpPut("{id}")]
-		public ActionResult UpdateProduct(Guid id, UpdateProductDto product)
+		public async Task<ActionResult> UpdateProduct(Guid id, UpdateProductDto product)
 		{
-			var p = _productsRepository.GetById(id);
+			var p = await _productsRepository.GetByIdAsync(id);
 			if (p is null)
 			{
 				return NotFound();
@@ -85,7 +85,7 @@ namespace Catalog.Controllers
 				Name = product.Name,
 				Price = product.Price,
 			};
-			_productsRepository.UpdateProduct(updatedProduct);
+			await _productsRepository.UpdateProductAsync(updatedProduct);
 
 			return NoContent();
 		}
@@ -93,14 +93,14 @@ namespace Catalog.Controllers
 
 		// DELETE api/products/{id} - delete a product
 		[HttpDelete("{id}")]
-		public ActionResult DeleteProduct(Guid id)
+		public async Task<ActionResult> DeleteProduct(Guid id)
 		{
-			var p = _productsRepository.GetById(id);
+			var p = await _productsRepository.GetByIdAsync(id);
 			if (p is null)
 			{
 				return NotFound();
 			}
-			_productsRepository.DeleteProduct(id);
+			await _productsRepository.DeleteProductAsync(id);
 			return NoContent();
 		}
 	}

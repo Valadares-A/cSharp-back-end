@@ -23,33 +23,33 @@ namespace Catalog.Repositories
 			_products = database.GetCollection<Product>(collectionName);
 		}
 
-		public void CreateProduct(Product product)
+		public async Task CreateProductAsync(Product product)
 		{
-			_products.InsertOne(product);
+			await _products.InsertOneAsync(product);
 		}
 
-		public void DeleteProduct(Guid id)
+		public async Task DeleteProductAsync(Guid id)
 		{
 			var filter = _filterBuilder.Eq("Id", id);
-			_products.DeleteOne(filter);
+			await _products.DeleteOneAsync(filter);
 		}
 
-		public IEnumerable<Product> GetAll()
+		public async Task<IEnumerable<Product>> GetAllAsync()
 		{
-			return _products.Find(new BsonDocument()).ToList();
+			return await _products.Find(new BsonDocument()).ToListAsync();
 		}
 
-		public Product GetById(Guid id)
+		public async Task<Product> GetByIdAsync(Guid id)
 		{
 			var filter = _filterBuilder.Eq("Id", id);
 			// var filter = _filter.Eq(p => p.Id, id);
-			return _products.Find(filter).SingleOrDefault();
+			return await _products.Find(filter).SingleOrDefaultAsync();
 		}
 
-		public void UpdateProduct(Product product)
+		public async Task UpdateProductAsync(Product product)
 		{
 			var filter = _filterBuilder.Eq("Id", product.Id);
-			_products.ReplaceOne(filter, product);
+			await _products.ReplaceOneAsync(filter, product);
 		}
 	}
 }

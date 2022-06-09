@@ -17,34 +17,37 @@ namespace Catalog.Repositories
 			new Product { Id = Guid.NewGuid(), Name = "Product 10", Price = 100, createDate = DateTimeOffset.UtcNow },
 		};
 
-		public void CreateProduct(Product product)
+		public async Task CreateProductAsync(Product product)
 		{
 			products.Add(product);
+			await Task.CompletedTask;
 		}
 
-		public void DeleteProduct(Guid id)
+		public async Task DeleteProductAsync(Guid id)
 		{
 			var index = products.FindIndex(p => p.Id == id);
-
 			products.RemoveAt(index);
+			await Task.CompletedTask;
 		}
 
 		// public IEnumerable<Product> GetAll() => products;
-		public IEnumerable<Product> GetAll()
+		public async Task<IEnumerable<Product>> GetAllAsync()
 		{
-			return products;
+			return await Task.FromResult(products);
 		}
 
-		public Product GetById(Guid id)
+		public async Task<Product> GetByIdAsync(Guid id)
 		{
 			// return products.FirstOrDefault(p => p.Id == id);
-			return products.Where(p => p.Id == id).SingleOrDefault();
+			var product = products.Where(p => p.Id == id).SingleOrDefault();
+			return await Task.FromResult(product);
 		}
 
-		public void UpdateProduct(Product product)
+		public async Task UpdateProductAsync(Product product)
 		{
 			var index = products.FindIndex(p => p.Id == product.Id);
 			products[index] = product;
+			await Task.CompletedTask;
 		}
 	}
 }
